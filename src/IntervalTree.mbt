@@ -1,50 +1,4 @@
-// Copyright 2025 International Digital Economy Academy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// Constructors and core operations
-
 ///|
-/// Creates a new empty interval tree.
-///|
-/// Creates a new empty interval tree.
-/// 
-/// 
-/// 
-/// 
-/// 
-/// 
-
-// Copyright 2025 International Digital Economy Academy
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-// This module implements the interval tree data structure.
-// The interval endpoints need to implement the Compare trait.
-// All operations support dynamic updates with balanced tree structure.
-
-///|
-/// Represents an interval with low and high endpoints
 pub fn new[V : Compare, D]() -> T[V, D] {
   { root: None, size: 0, options: default_options() }
 }
@@ -84,32 +38,28 @@ pub fn from_array[V : Compare, D](
 ///|
 /// Inserts an interval with associated data into the tree.
 /// Returns true if the interval was inserted, false if it was rejected or updated.
-
-///|
-/// Inserts an interval with associated data into the tree.
-/// Returns true if the interval was inserted, false if it was rejected or updated.
 pub fn insert[V : Compare, D](
   self : T[V, D],
   interval : Interval[V],
   data : D
 ) -> Bool {
-  // 验证区间有效性
+  // Validate interval
   if is_valid_interval(interval) == false {
-    println("无效区间: low > high")
+    println("Invalid interval: low > high")
     return false
   }
 
-  // 如果不允许重复且已存在相同区间，则更新数据
+  // If duplicates are not allowed and the same interval exists, update the data
   if self.options.allow_duplicates == false {
     match self.find_exact(interval) {
       Some(node) => {
-        // 更新已存在节点的数据
+        // Update data in existing node
         node.data = data
         return false
       }
-      None => ...
-    } // 继续执行插入操作
-  }
+      None => ignore(None)
+    }
+  } // Continue with insertion
   let new_node = {
     interval,
     data,
@@ -119,7 +69,7 @@ pub fn insert[V : Compare, D](
     height: 1,
   }
 
-  // 插入新节点
+  // Insert new node
 
   match self.root {
     None => {
@@ -181,30 +131,30 @@ pub fn find_overlaps_helper[V : Compare, D](
   results : Array[IntervalMatch[V, D]],
   interval_type : IntervalType
 ) -> Unit {
-  // 检查当前节点的区间是否与查询区间重叠
+  // Check if the current node's interval overlaps with the query interval
   if intervals_overlap(node.interval, query, interval_type~) {
-    // 将当前节点添加到结果列表中
+    // Add the current node to the result list
     results.push({ interval: node.interval, data: node.data })
   }
 
-  // 检查左子树
-  // 如果左子树存在且其最大右端点 >= 查询区间的左端点，则可能有重叠
+  // Check the left subtree
+  // If the left subtree exists and its max_high >= the query interval's low, there may be overlap
   match node.left {
     Some(left_node) =>
       if endpoints_overlap(left_node.max_high, query.low, interval_type) {
         find_overlaps_helper(left_node, query, results, interval_type)
       }
-    None => ...
+    None => ignore(None)
   }
 
-  // 检查右子树
-  // 如果查询区间的右端点 >= 当前节点的左端点，则右子树可能有重叠
+  // Check the right subtree
+  // If the query interval's high >= the current node's low, there may be overlap in the right subtree
   match node.right {
     Some(right_node) =>
       if endpoints_overlap(query.high, node.interval.low, interval_type) {
         find_overlaps_helper(right_node, query, results, interval_type)
       }
-    None => ...
+    None => ignore(None)
   }
 }
 
@@ -268,16 +218,14 @@ pub fn is_empty[V, D](self : T[V, D]) -> Bool {
 
 ///|
 /// Inserts a node into the tree.
-///|
-/// Inserts a node into the tree.
 pub fn insert_node[V : Compare, D](
   node : Node[V, D],
   new_node : Node[V, D]
 ) -> Bool {
-  // 使用区间的低端点作为BST的排序键
+  // Use the low endpoint of the interval as the BST key
   let comp = new_node.interval.low.compare(node.interval.low)
 
-  // 插入到左子树
+  // Insert into the left subtree
   if comp < 0 {
     match node.left {
       None => {
@@ -311,12 +259,12 @@ pub fn insert_node[V : Compare, D](
       }
     }
   } else if new_node.interval.high == node.interval.high {
-    // 更新数据
+    // Update data
     node.data = new_node.data
     return false
-    // 根据高端点决定插入位置
+    // Decide insertion position based on high endpoint
   } else if new_node.interval.high.compare(node.interval.high) < 0 {
-    // 将 if node.left.is_none() 改为 match
+    // Change if node.left.is_none() to match
     match node.left {
       None => {
         node.left = Some(new_node)
@@ -333,7 +281,7 @@ pub fn insert_node[V : Compare, D](
       }
     }
   } else {
-    // 将 if node.right.is_none() 改为 match
+    // Change if node.right.is_none() to match
     match node.right {
       None => {
         node.right = Some(new_node)
@@ -369,7 +317,7 @@ pub fn remove_node[V : Compare, D](
     Some(current) => {
       let comp = interval.low.compare(current.interval.low)
 
-      // 在左子树中查找
+      // Search in the left subtree
       if comp < 0 {
         let result = remove_node(current.left, interval)
         current.left = result.node
@@ -380,7 +328,7 @@ pub fn remove_node[V : Compare, D](
         } else {
           { node: Some(current), removed: false }
         }
-        // 在右子树中查找
+        // Search in the right subtree
       } else if comp > 0 {
         let result = remove_node(current.right, interval)
         current.right = result.node
@@ -391,9 +339,9 @@ pub fn remove_node[V : Compare, D](
         } else {
           { node: Some(current), removed: false }
         }
-        // 找到了相同低端点的节点，检查高端点
+        // Found a node with the same low endpoint, check the high endpoint
       } else if current.interval.high != interval.high {
-        // 低端点相同但高端点不同，可能在子树中
+        // Same low endpoint but different high endpoint, may be in the subtree
         let result = remove_node(current.right, interval)
         current.right = result.node
         if result.removed {
@@ -404,24 +352,24 @@ pub fn remove_node[V : Compare, D](
           { node: Some(current), removed: false }
         }
       } else {
-        // 找到了要删除的节点
+        // Found the node to be removed
         match (current.left, current.right) {
-          // 情况1: 叶节点
+          // Case 1: Leaf node
           (None, None) => { node: None, removed: true }
-          // 情况2a: 只有右子节点
+          // Case 2a: Only right child
           (None, Some(_)) => { node: current.right, removed: true }
-          // 情况2b: 只有左子节点
+          // Case 2b: Only left child
           (Some(_), None) => { node: current.left, removed: true }
-          // 情况3: 有两个子节点
+          // Case 3: Two children
           (Some(_), Some(_)) => {
-            // 查找右子树中的最小节点
+            // Find the minimum node in the right subtree
             let successor = find_min(current.right.unwrap())
 
-            // 复制后继节点的值到当前节点
+            // Copy the successor's value to the current node
             current.interval = successor.interval
             current.data = successor.data
 
-            // 删除后继节点
+            // Remove the successor node
             let result = remove_node(current.right, successor.interval)
             current.right = result.node
             update_height_and_max_high(current)
@@ -481,43 +429,39 @@ pub fn find_contained_helper[V : Compare, D](
   results : Array[IntervalMatch[V, D]],
   interval_type : IntervalType
 ) -> Unit {
-  // 检查当前节点的区间是否完全包含在查询区间内
-  // 检查当前节点的区间是否完全包含在查询区间内
+  // Check if the current node's interval is completely contained within the query interval
+  // Check if the current node's interval is completely contained within the query interval
   if interval_contains(query, node.interval, interval_type~) {
-    // 先创建对象，再推入数组
+    // Create object first, then push into array
     let match_obj = { interval: node.interval, data: node.data }
     results.push(match_obj)
   }
 
-  // 使用match检查左子树
+  // Use match to check the left subtree
   match node.left {
     Some(left_node) =>
       if endpoints_leq(query.low, node.interval.low, interval_type) {
         find_contained_helper(left_node, query, results, interval_type)
       }
-    None => ...
+    None => ignore(None)
   }
 
-  // 使用match检查右子树
+  // Use match to check the right subtree
   match node.right {
     Some(right_node) =>
       if endpoints_geq(query.high, node.interval.high, interval_type) {
         find_contained_helper(right_node, query, results, interval_type)
       }
-    None => ...
+    None => ignore(None)
   }
 }
 
 // This duplicate definition has been removed
-
 // AVL Tree balancing functions
-
-///|
-/// Updates height and max_high values of a node.
 ///|
 /// Updates height and max_high values of a node.
 pub fn update_height_and_max_high[V : Compare, D](node : Node[V, D]) -> Unit {
-  // 更新高度
+  // Update height
   node.height = 1 +
     @math.maximum(
       match node.left {
@@ -530,21 +474,21 @@ pub fn update_height_and_max_high[V : Compare, D](node : Node[V, D]) -> Unit {
       },
     )
 
-  // 更新最大右端点
+  // Update max_high
   node.max_high = node.interval.high
   match node.left {
     Some(left) =>
       if left.max_high.compare(node.max_high) > 0 {
         node.max_high = left.max_high
       }
-    None => ...
+    None => ignore(None)
   }
   match node.right {
     Some(right) =>
       if right.max_high.compare(node.max_high) > 0 {
         node.max_high = right.max_high
       }
-    None => ...
+    None => ignore(None)
   }
 }
 
@@ -567,22 +511,22 @@ pub fn get_balance_factor[V, D](node : Node[V, D]) -> Int {
 pub fn balance[V : Compare, D](node : Node[V, D]) -> Unit {
   let balance = get_balance_factor(node)
 
-  // 左子树偏重
+  // Left subtree is heavier
   if balance > 1 {
     let left = node.left.unwrap()
 
-    // 左-左情况或左-右情况
+    // Left-Left case or Left-Right case
     if get_balance_factor(left) >= 0 {
       right_rotate(node)
     } else {
       left_rotate(left)
       right_rotate(node)
     }
-    // 右子树偏重
+    // Right subtree is heavier
   } else if balance < -1 {
     let right = node.right.unwrap()
 
-    // 右-右情况或右-左情况
+    // Right-Right case or Right-Left case
     if get_balance_factor(right) <= 0 {
       left_rotate(node)
     } else {
@@ -599,19 +543,21 @@ pub fn right_rotate[V : Compare, D](y : Node[V, D]) -> Unit {
     Some(x) => {
       let t2 = x.right
 
-      // 执行旋转
+      // Perform rotation
       x.right = Some(y)
       y.left = t2
 
-      // 更新高度和最大右端点
+      // Update height and max_high
       update_height_and_max_high(y)
       update_height_and_max_high(x)
 
-      // 需要额外处理：让父节点指向新的子树根x
+      // Additional handling needed: make the parent node point to the new subtree root x
     }
     None =>
-      // 理论上不应该发生
-      println("错误：尝试在左子树为空的节点上执行右旋转")
+      // Should not happen theoretically
+      println(
+        "Error: Attempt to perform right rotation on a node with empty left subtree",
+      )
   }
 }
 
@@ -622,19 +568,21 @@ pub fn left_rotate[V : Compare, D](x : Node[V, D]) -> Unit {
     Some(y) => {
       let t2 = y.left
 
-      // 执行旋转
+      // Perform rotation
       y.left = Some(x)
       x.right = t2
 
-      // 更新高度和最大右端点
+      // Update height and max_high
       update_height_and_max_high(x)
       update_height_and_max_high(y)
 
-      // 需要额外处理：让父节点指向新的子树根y
+      // Additional handling needed: make the parent node point to the new subtree root y
     }
     None =>
-      // 理论上不应该发生
-      println("错误：尝试在右子树为空的节点上执行左旋转")
+      // Should not happen theoretically
+      println(
+        "Error: Attempt to perform left rotation on a node with empty right subtree",
+      )
   }
 }
 // Interval operations
@@ -691,8 +639,8 @@ pub fn endpoints_overlap[V : Compare](
   match interval_type {
     IntervalType::Closed => a.compare(b) >= 0
     IntervalType::Open => a.compare(b) > 0
-    IntervalType::LeftClosed => a.compare(b) > 0 // 左闭右开，右端点不包含
-    IntervalType::RightClosed => a.compare(b) >= 0 // 左开右闭，右端点包含
+    IntervalType::LeftClosed => a.compare(b) > 0 // Left-closed, right-open, right endpoint not included
+    IntervalType::RightClosed => a.compare(b) >= 0 // Left-open, right-closed, right endpoint included
   }
 }
 
@@ -727,17 +675,13 @@ pub fn endpoints_geq[V : Compare](
 }
 
 ///|
-
-///|
-
-///|
 /// Converts the tree to an array of IntervalMatch objects.
 pub fn to_array[V, D](self : T[V, D]) -> Array[IntervalMatch[V, D]] {
-  // 获取所有区间，存入一个临时数组
+  // Get all intervals and store them in a temporary array
   let intervals_data = []
   self.each(fn(interval, data) { intervals_data.push((interval, data)) })
 
-  // 创建结果数组并填充数据
+  // Create result array and fill with data
   let n = intervals_data.length()
   let result = []
   for i in 0..<n {
@@ -776,26 +720,9 @@ pub fn to_array[V, D](self : T[V, D]) -> Array[IntervalMatch[V, D]] {
 /// Creates an interval with the given endpoints.
 pub fn make_interval[T : Compare](low : T, high : T) -> Interval[T] {
   if low.compare(high) > 0 {
-    println("警告: 创建了无效区间 ")
+    println("Warning: Created invalid interval")
   }
   { low, high }
-}
-
-// Implementation of Show for better debugging
-
-///|
-pub impl[V : Show, D : Show] Show for IntervalMatch[V, D] with output(
-  self,
-  logger
-) {
-  logger.write_string(
-    "[" +
-    self.interval.low.to_string() +
-    ", " +
-    self.interval.high.to_string() +
-    "]: " +
-    self.data.to_string(),
-  )
 }
 
 ///|
@@ -813,13 +740,13 @@ pub fn in_order_traverse[V, D, R](
   match node {
     None => acc
     Some(current) => {
-      // 先访问左子树
-      let left_result = in_order_traverse(current.left, f, acc)
+      // Visit left subtree first
+      ignore(in_order_traverse(current.left, f, acc))
 
-      // 处理当前节点
+      // Process current node
       let current_result = f(current)
 
-      // 最后访问右子树
+      // Visit right subtree last
       in_order_traverse(current.right, f, current_result)
     }
   }
@@ -841,4 +768,24 @@ pub fn eachi[V, D](self : T[V, D], f : (Int, Interval[V], D) -> Unit) -> Unit {
     index += 1
   }
   in_order_traverse(self.root, node_f, ())
+}
+
+// Access intervals in the tree by index
+
+///| This is a convenience method that provides index-based access to tree elements
+///|
+/// Implement index access for interval tree
+pub fn op_get[V : Compare, D](
+  self : T[V, D],
+  index : Int
+) -> IntervalMatch[V, D] {
+  let mut result = None
+  let mut current_idx = 0
+  self.each(fn(interval, data) {
+    if current_idx == index {
+      result = Some({ interval, data })
+    }
+    current_idx += 1
+  })
+  result.unwrap()
 }

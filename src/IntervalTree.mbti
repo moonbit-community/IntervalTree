@@ -1,0 +1,71 @@
+fn new[V : Compare, D]() -> T[V, D]
+
+fn new_with_options[V : Compare, D](options : IntervalOptions) -> T[V, D]
+
+fn singleton[V : Compare, D](interval : Interval[V], data : D, options~ : IntervalOptions = default_options()) -> T[V, D]
+
+fn from_array[V : Compare, D](intervals : Array[(Interval[V], D)], options~ : IntervalOptions = default_options()) -> T[V, D]
+
+fn insert[V : Compare, D](self : T[V, D], interval : Interval[V], data : D) -> Bool
+
+fn remove[V : Compare, D](self : T[V, D], interval : Interval[V]) -> Bool
+
+fn find_overlaps[V : Compare, D](self : T[V, D], query : Interval[V]) -> Array[IntervalMatch[V, D]]
+
+fn find_overlaps_helper[V : Compare, D](node : Node[V, D], query : Interval[V], results : Array[IntervalMatch[V, D]], interval_type : IntervalType) -> Unit
+
+fn find_contained[V : Compare, D](self : T[V, D], query : Interval[V]) -> Array[IntervalMatch[V, D]]
+
+fn find_exact[V : Compare, D](self : T[V, D], query : Interval[V]) -> Node[V, D]?
+
+fn contains[V : Compare, D](self : T[V, D], query : Interval[V]) -> Bool
+
+fn clear[V, D](self : T[V, D]) -> Unit
+
+fn size[V, D](self : T[V, D]) -> Int
+
+fn is_empty[V, D](self : T[V, D]) -> Bool
+
+fn insert_node[V : Compare, D](node : Node[V, D], new_node : Node[V, D]) -> Bool
+
+fn remove_node[V : Compare, D](node : Node[V, D]?, interval : Interval[V]) -> RemoveResult[V, D]
+
+fn find_min[V, D](node : Node[V, D]) -> Node[V, D]
+
+fn find_exact_helper[V : Compare, D](node : Node[V, D], query : Interval[V]) -> Node[V, D]?
+
+fn find_contained_helper[V : Compare, D](node : Node[V, D], query : Interval[V], results : Array[IntervalMatch[V, D]], interval_type : IntervalType) -> Unit
+
+fn update_height_and_max_high[V : Compare, D](node : Node[V, D]) -> Unit
+
+fn get_balance_factor[V, D](node : Node[V, D]) -> Int
+
+fn balance[V : Compare, D](node : Node[V, D]) -> Unit
+
+fn right_rotate[V : Compare, D](y : Node[V, D]) -> Unit
+
+fn left_rotate[V : Compare, D](x : Node[V, D]) -> Unit
+
+fn is_valid_interval[V : Compare](interval : Interval[V]) -> Bool
+
+fn intervals_overlap[V : Compare](a : Interval[V], b : Interval[V], interval_type~ : IntervalType = IntervalType::Closed) -> Bool
+
+fn interval_contains[V : Compare](a : Interval[V], b : Interval[V], interval_type~ : IntervalType = IntervalType::Closed) -> Bool
+
+fn endpoints_overlap[V : Compare](a : V, b : V, interval_type : IntervalType) -> Bool
+
+fn endpoints_leq[V : Compare](a : V, b : V, interval_type : IntervalType) -> Bool
+
+fn endpoints_geq[V : Compare](a : V, b : V, interval_type : IntervalType) -> Bool
+
+fn to_array[V, D](self : T[V, D]) -> Array[IntervalMatch[V, D]]
+
+fn make_interval[T : Compare](low : T, high : T) -> Interval[T]
+
+fn in_order_traverse[V, D, R](node : Node[V, D]?, f : (Node[V, D]) -> R, acc : R) -> R
+
+fn each[V, D](self : T[V, D], f : (Interval[V], D) -> Unit) -> Unit
+
+fn eachi[V, D](self : T[V, D], f : (Int, Interval[V], D) -> Unit) -> Unit
+
+fn op_get[V : Compare, D](self : T[V, D], index : Int) -> IntervalMatch[V, D]
