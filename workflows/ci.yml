@@ -1,0 +1,47 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Setup MoonBit
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Moonbit
+        uses: hustcer/setup-moonbit@develop
+
+      - name: Check Moonbit Version
+        run: |
+          moon version --all
+          moon update
+          moon install
+
+      - name: Run tests with coverage
+        run: |
+          moon test --enable-coverage
+
+      - name: Generate and upload coverage report
+        run: |
+          moon coverage report \
+            -f coveralls \
+            -o codecov_report.json \
+            --service-name github \
+            --service-job-id "$GITHUB_RUN_ID" \
+            --service-pull-request "${{ github.event.pull_request.number }}" \
+            --send-to codecov
+        env:
+          CODECOV_TOKEN: e5b5ac9c-5092-4685-8eb4-f6df4c874a9a

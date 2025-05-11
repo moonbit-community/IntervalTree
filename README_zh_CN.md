@@ -2,6 +2,8 @@
 
 [English](https://github.com/moonbit-community/IntervalTree/blob/master/README.md) | [简体中文](https://github.com/moonbit-community/IntervalTree/blob/master/README_zh_CN.md)
 
+[![Build Status](https://img.shields.io/github/actions/workflow/status/moonbit-community/IntervalTree/ci.yml)](https://github.com/moonbit-community/IntervalTree/actions)  [![License](https://img.shields.io/github/license/moonbit-community/IntervalTree)](LICENSE)  [![codecov](https://codecov.io/gh/moonbit-community/IntervalTree/branch/main/graph/badge.svg)](https://codecov.io/gh/moonbit-community/IntervalTree)  
+
 
 IntervalTree 是一个高效的区间树实现，支持各种区间查询操作，如查找重叠区间和包含区间。区间树是一种特殊的自平衡二叉搜索树，专为快速处理区间查询而设计。
 

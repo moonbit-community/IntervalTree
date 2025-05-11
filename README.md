@@ -2,6 +2,8 @@
 
 [English](https://github.com/moonbit-community/IntervalTree/blob/master/README.md) | [简体中文](https://github.com/moonbit-community/IntervalTree/blob/master/README_zh_CN.md)
 
+[![Build Status](https://img.shields.io/github/actions/workflow/status/moonbit-community/IntervalTree/ci.yml)](https://github.com/moonbit-community/IntervalTree/actions)  [![License](https://img.shields.io/github/license/moonbit-community/IntervalTree)](LICENSE)  [![codecov](https://codecov.io/gh/moonbit-community/IntervalTree/branch/main/graph/badge.svg)](https://codecov.io/gh/moonbit-community/IntervalTree)  
+
 
 IntervalTree is an efficient interval tree implementation that supports various interval query operations, such as finding overlapping intervals and contained intervals. An interval tree is a special self-balancing binary search tree designed for fast processing of interval queries.
 
