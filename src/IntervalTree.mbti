@@ -38,9 +38,9 @@ fn[V : Compare, D] left_rotate(Node[V, D]) -> Unit
 
 fn[T : Compare] make_interval(T, T) -> Interval[T]
 
-fn[V : Compare, D] new() -> T[V, D]
+fn[V, D] new() -> T[V, D]
 
-fn[V : Compare, D] new_with_options(IntervalOptions) -> T[V, D]
+fn[V, D] new_with_options(IntervalOptions) -> T[V, D]
 
 fn[V : Compare, D] remove_node(Node[V, D]?, Interval[V]) -> RemoveResult[V, D]
 
@@ -113,11 +113,11 @@ fn[V : Compare, D] T::find_exact(Self[V, D], Interval[V]) -> Node[V, D]?
 fn[V : Compare, D] T::find_overlaps(Self[V, D], Interval[V]) -> Array[IntervalMatch[V, D]]
 fn[V : Compare, D] T::insert(Self[V, D], Interval[V], D) -> Bool
 fn[V, D] T::is_empty(Self[V, D]) -> Bool
-fn[V : Compare, D] T::op_get(Self[V, D], Int) -> IntervalMatch[V, D]
+fn[V, D] T::op_get(Self[V, D], Int) -> IntervalMatch[V, D]
 fn[V : Compare, D] T::remove(Self[V, D], Interval[V]) -> Bool
 fn[V, D] T::size(Self[V, D]) -> Int
 fn[V, D] T::to_array(Self[V, D]) -> Array[IntervalMatch[V, D]]
-impl[V : Show, D] Show for T[V, D]
+impl[V, D] Show for T[V, D]
 
 // Type aliases
 

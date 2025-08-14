@@ -1,11 +1,11 @@
 ///|
-pub fn[V : Compare, D] new() -> T[V, D] {
+pub fn[V, D] new() -> T[V, D] {
   { root: None, size: 0, options: default_options() }
 }
 
 ///|
 /// Creates a new interval tree with options.
-pub fn[V : Compare, D] new_with_options(options : IntervalOptions) -> T[V, D] {
+pub fn[V, D] new_with_options(options : IntervalOptions) -> T[V, D] {
   { root: None, size: 0, options }
 }
 
@@ -57,7 +57,7 @@ pub fn[V : Compare, D] insert(
         node.data = data
         return false
       }
-      None => ignore(None)
+      None => ()
     }
   } // Continue with insertion
   let new_node = {
@@ -144,7 +144,7 @@ pub fn[V : Compare, D] find_overlaps_helper(
       if endpoints_overlap(left_node.max_high, query.low, interval_type) {
         find_overlaps_helper(left_node, query, results, interval_type)
       }
-    None => ignore(None)
+    None => ()
   }
 
   // Check the right subtree
@@ -154,7 +154,7 @@ pub fn[V : Compare, D] find_overlaps_helper(
       if endpoints_overlap(query.high, node.interval.low, interval_type) {
         find_overlaps_helper(right_node, query, results, interval_type)
       }
-    None => ignore(None)
+    None => ()
   }
 }
 
@@ -445,7 +445,7 @@ pub fn[V : Compare, D] find_contained_helper(
       if endpoints_leq(query.low, node.interval.low, interval_type) {
         find_contained_helper(left_node, query, results, interval_type)
       }
-    None => ignore(None)
+    None => ()
   }
 
   // Use match to check the right subtree
@@ -454,7 +454,7 @@ pub fn[V : Compare, D] find_contained_helper(
       if endpoints_geq(query.high, node.interval.high, interval_type) {
         find_contained_helper(right_node, query, results, interval_type)
       }
-    None => ignore(None)
+    None => ()
   }
 }
 
@@ -466,7 +466,7 @@ pub fn[V : Compare, D] find_contained_helper(
 pub fn[V : Compare, D] update_height_and_max_high(node : Node[V, D]) -> Unit {
   // Update height
   node.height = 1 +
-    @math.maximum(
+    @cmp.maximum(
       match node.left {
         Some(left) => left.height
         None => 0
@@ -484,14 +484,14 @@ pub fn[V : Compare, D] update_height_and_max_high(node : Node[V, D]) -> Unit {
       if left.max_high.compare(node.max_high) > 0 {
         node.max_high = left.max_high
       }
-    None => ignore(None)
+    None => ()
   }
   match node.right {
     Some(right) =>
       if right.max_high.compare(node.max_high) > 0 {
         node.max_high = right.max_high
       }
-    None => ignore(None)
+    None => ()
   }
 }
 
@@ -729,7 +729,7 @@ pub fn[T : Compare] make_interval(low : T, high : T) -> Interval[T] {
 }
 
 ///|
-pub impl[V : Show, D] Show for T[V, D] with output(self, logger) {
+pub impl[V, D] Show for T[V, D] with output(self, logger) {
   logger.write_string("IntervalTree(size=" + self.size.to_string() + ")")
 }
 
@@ -779,10 +779,7 @@ pub fn[V, D] eachi(self : T[V, D], f : (Int, Interval[V], D) -> Unit) -> Unit {
 
 ///|
 /// Implement index access for interval tree
-pub fn[V : Compare, D] op_get(
-  self : T[V, D],
-  index : Int,
-) -> IntervalMatch[V, D] {
+pub fn[V, D] op_get(self : T[V, D], index : Int) -> IntervalMatch[V, D] {
   let mut result = None
   let mut current_idx = 0
   self.each(fn(interval, data) {
