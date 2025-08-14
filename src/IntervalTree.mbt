@@ -1,20 +1,20 @@
 ///|
-pub fn new[V : Compare, D]() -> T[V, D] {
+pub fn[V, D] new() -> T[V, D] {
   { root: None, size: 0, options: default_options() }
 }
 
 ///|
 /// Creates a new interval tree with options.
-pub fn new_with_options[V : Compare, D](options : IntervalOptions) -> T[V, D] {
+pub fn[V, D] new_with_options(options : IntervalOptions) -> T[V, D] {
   { root: None, size: 0, options }
 }
 
 ///|
 /// Creates a new interval tree with a single interval.
-pub fn singleton[V : Compare, D](
+pub fn[V : Compare, D] singleton(
   interval : Interval[V],
   data : D,
-  options~ : IntervalOptions = default_options()
+  options~ : IntervalOptions = default_options(),
 ) -> T[V, D] {
   let tree = new_with_options(options)
   ignore(tree.insert(interval, data))
@@ -23,9 +23,9 @@ pub fn singleton[V : Compare, D](
 
 ///|
 /// Creates a new interval tree from an array of intervals and data.
-pub fn from_array[V : Compare, D](
+pub fn[V : Compare, D] from_array(
   intervals : Array[(Interval[V], D)],
-  options~ : IntervalOptions = default_options()
+  options~ : IntervalOptions = default_options(),
 ) -> T[V, D] {
   let tree = new_with_options(options)
   for i in 0..<intervals.length() {
@@ -38,10 +38,10 @@ pub fn from_array[V : Compare, D](
 ///|
 /// Inserts an interval with associated data into the tree.
 /// Returns true if the interval was inserted, false if it was rejected or updated.
-pub fn insert[V : Compare, D](
+pub fn[V : Compare, D] insert(
   self : T[V, D],
   interval : Interval[V],
-  data : D
+  data : D,
 ) -> Bool {
   // Validate interval
   if is_valid_interval(interval) == false {
@@ -57,7 +57,7 @@ pub fn insert[V : Compare, D](
         node.data = data
         return false
       }
-      None => ignore(None)
+      None => ()
     }
   } // Continue with insertion
   let new_node = {
@@ -90,7 +90,7 @@ pub fn insert[V : Compare, D](
 ///|
 /// Removes an interval from the tree.
 /// Returns true if the interval was found and removed.
-pub fn remove[V : Compare, D](self : T[V, D], interval : Interval[V]) -> Bool {
+pub fn[V : Compare, D] remove(self : T[V, D], interval : Interval[V]) -> Bool {
   match self.root {
     None => return false
     Some(_) => {
@@ -109,9 +109,9 @@ pub fn remove[V : Compare, D](self : T[V, D], interval : Interval[V]) -> Bool {
 
 ///|
 /// Finds all intervals that overlap with the query interval.
-pub fn find_overlaps[V : Compare, D](
+pub fn[V : Compare, D] find_overlaps(
   self : T[V, D],
-  query : Interval[V]
+  query : Interval[V],
 ) -> Array[IntervalMatch[V, D]] {
   let results = []
   match self.root {
@@ -125,11 +125,11 @@ pub fn find_overlaps[V : Compare, D](
 
 ///|
 /// Finds all intervals in the subtree that overlap with the query interval.
-pub fn find_overlaps_helper[V : Compare, D](
+pub fn[V : Compare, D] find_overlaps_helper(
   node : Node[V, D],
   query : Interval[V],
   results : Array[IntervalMatch[V, D]],
-  interval_type : IntervalType
+  interval_type : IntervalType,
 ) -> Unit {
   // Check if the current node's interval overlaps with the query interval
   if intervals_overlap(node.interval, query, interval_type~) {
@@ -144,7 +144,7 @@ pub fn find_overlaps_helper[V : Compare, D](
       if endpoints_overlap(left_node.max_high, query.low, interval_type) {
         find_overlaps_helper(left_node, query, results, interval_type)
       }
-    None => ignore(None)
+    None => ()
   }
 
   // Check the right subtree
@@ -154,15 +154,15 @@ pub fn find_overlaps_helper[V : Compare, D](
       if endpoints_overlap(query.high, node.interval.low, interval_type) {
         find_overlaps_helper(right_node, query, results, interval_type)
       }
-    None => ignore(None)
+    None => ()
   }
 }
 
 ///|
 /// Finds all intervals that are completely contained within the query interval.
-pub fn find_contained[V : Compare, D](
+pub fn[V : Compare, D] find_contained(
   self : T[V, D],
-  query : Interval[V]
+  query : Interval[V],
 ) -> Array[IntervalMatch[V, D]] {
   let results = []
   match self.root {
@@ -176,9 +176,9 @@ pub fn find_contained[V : Compare, D](
 
 ///|
 /// Finds an interval exactly matching the query.
-pub fn find_exact[V : Compare, D](
+pub fn[V : Compare, D] find_exact(
   self : T[V, D],
-  query : Interval[V]
+  query : Interval[V],
 ) -> Node[V, D]? {
   match self.root {
     None => None
@@ -188,7 +188,7 @@ pub fn find_exact[V : Compare, D](
 
 ///|
 /// Returns true if the tree contains an interval that exactly matches the query.
-pub fn contains[V : Compare, D](self : T[V, D], query : Interval[V]) -> Bool {
+pub fn[V : Compare, D] contains(self : T[V, D], query : Interval[V]) -> Bool {
   match self.find_exact(query) {
     Some(_) => true
     None => false
@@ -197,20 +197,20 @@ pub fn contains[V : Compare, D](self : T[V, D], query : Interval[V]) -> Bool {
 
 ///|
 /// Clears all intervals from the tree.
-pub fn clear[V, D](self : T[V, D]) -> Unit {
+pub fn[V, D] clear(self : T[V, D]) -> Unit {
   self.root = None
   self.size = 0
 }
 
 ///|
 /// Returns the number of intervals in the tree.
-pub fn size[V, D](self : T[V, D]) -> Int {
+pub fn[V, D] size(self : T[V, D]) -> Int {
   self.size
 }
 
 ///|
 /// Returns true if the tree is empty.
-pub fn is_empty[V, D](self : T[V, D]) -> Bool {
+pub fn[V, D] is_empty(self : T[V, D]) -> Bool {
   self.size == 0
 }
 
@@ -218,9 +218,9 @@ pub fn is_empty[V, D](self : T[V, D]) -> Bool {
 
 ///|
 /// Inserts a node into the tree.
-pub fn insert_node[V : Compare, D](
+pub fn[V : Compare, D] insert_node(
   node : Node[V, D],
-  new_node : Node[V, D]
+  new_node : Node[V, D],
 ) -> Bool {
   // Use the low endpoint of the interval as the BST key
   let comp = new_node.interval.low.compare(node.interval.low)
@@ -308,9 +308,9 @@ pub struct RemoveResult[V, D] {
 }
 
 ///|
-pub fn remove_node[V : Compare, D](
+pub fn[V : Compare, D] remove_node(
   node : Node[V, D]?,
-  interval : Interval[V]
+  interval : Interval[V],
 ) -> RemoveResult[V, D] {
   match node {
     None => { node: None, removed: false }
@@ -384,9 +384,10 @@ pub fn remove_node[V : Compare, D](
 
 ///|
 /// Finds the node with the minimum value in the subtree.
+
 ///|
 /// Finds the node with the minimum value in the subtree.
-pub fn find_min[V, D](node : Node[V, D]) -> Node[V, D] {
+pub fn[V, D] find_min(node : Node[V, D]) -> Node[V, D] {
   let mut current = node
   while true {
     match current.left {
@@ -399,9 +400,9 @@ pub fn find_min[V, D](node : Node[V, D]) -> Node[V, D] {
 
 ///|
 /// Finds a node with exactly matching interval.
-pub fn find_exact_helper[V : Compare, D](
+pub fn[V : Compare, D] find_exact_helper(
   node : Node[V, D],
-  query : Interval[V]
+  query : Interval[V],
 ) -> Node[V, D]? {
   let low_comp = query.low.compare(node.interval.low)
   if low_comp == 0 && query.high == node.interval.high {
@@ -421,13 +422,14 @@ pub fn find_exact_helper[V : Compare, D](
 }
 
 ///|
+
 ///|
 /// Finds all intervals in the subtree that are completely contained within the query interval.
-pub fn find_contained_helper[V : Compare, D](
+pub fn[V : Compare, D] find_contained_helper(
   node : Node[V, D],
   query : Interval[V],
   results : Array[IntervalMatch[V, D]],
-  interval_type : IntervalType
+  interval_type : IntervalType,
 ) -> Unit {
   // Check if the current node's interval is completely contained within the query interval
   // Check if the current node's interval is completely contained within the query interval
@@ -443,7 +445,7 @@ pub fn find_contained_helper[V : Compare, D](
       if endpoints_leq(query.low, node.interval.low, interval_type) {
         find_contained_helper(left_node, query, results, interval_type)
       }
-    None => ignore(None)
+    None => ()
   }
 
   // Use match to check the right subtree
@@ -452,18 +454,19 @@ pub fn find_contained_helper[V : Compare, D](
       if endpoints_geq(query.high, node.interval.high, interval_type) {
         find_contained_helper(right_node, query, results, interval_type)
       }
-    None => ignore(None)
+    None => ()
   }
 }
 
 // This duplicate definition has been removed
 // AVL Tree balancing functions
+
 ///|
 /// Updates height and max_high values of a node.
-pub fn update_height_and_max_high[V : Compare, D](node : Node[V, D]) -> Unit {
+pub fn[V : Compare, D] update_height_and_max_high(node : Node[V, D]) -> Unit {
   // Update height
   node.height = 1 +
-    @math.maximum(
+    @cmp.maximum(
       match node.left {
         Some(left) => left.height
         None => 0
@@ -481,20 +484,20 @@ pub fn update_height_and_max_high[V : Compare, D](node : Node[V, D]) -> Unit {
       if left.max_high.compare(node.max_high) > 0 {
         node.max_high = left.max_high
       }
-    None => ignore(None)
+    None => ()
   }
   match node.right {
     Some(right) =>
       if right.max_high.compare(node.max_high) > 0 {
         node.max_high = right.max_high
       }
-    None => ignore(None)
+    None => ()
   }
 }
 
 ///|
 /// Gets the balance factor of a node.
-pub fn get_balance_factor[V, D](node : Node[V, D]) -> Int {
+pub fn[V, D] get_balance_factor(node : Node[V, D]) -> Int {
   let left_height = match node.left {
     Some(left) => left.height
     None => 0
@@ -508,7 +511,7 @@ pub fn get_balance_factor[V, D](node : Node[V, D]) -> Int {
 
 ///|
 /// Balances a node if needed.
-pub fn balance[V : Compare, D](node : Node[V, D]) -> Unit {
+pub fn[V : Compare, D] balance(node : Node[V, D]) -> Unit {
   let balance = get_balance_factor(node)
 
   // Left subtree is heavier
@@ -538,7 +541,7 @@ pub fn balance[V : Compare, D](node : Node[V, D]) -> Unit {
 
 ///|
 /// Right rotation.
-pub fn right_rotate[V : Compare, D](y : Node[V, D]) -> Unit {
+pub fn[V : Compare, D] right_rotate(y : Node[V, D]) -> Unit {
   match y.left {
     Some(x) => {
       let t2 = x.right
@@ -563,7 +566,7 @@ pub fn right_rotate[V : Compare, D](y : Node[V, D]) -> Unit {
 
 ///|
 /// Left rotation.
-pub fn left_rotate[V : Compare, D](x : Node[V, D]) -> Unit {
+pub fn[V : Compare, D] left_rotate(x : Node[V, D]) -> Unit {
   match x.right {
     Some(y) => {
       let t2 = y.left
@@ -589,16 +592,16 @@ pub fn left_rotate[V : Compare, D](x : Node[V, D]) -> Unit {
 
 ///|
 /// Checks if an interval is valid (low <= high).
-pub fn is_valid_interval[V : Compare](interval : Interval[V]) -> Bool {
+pub fn[V : Compare] is_valid_interval(interval : Interval[V]) -> Bool {
   interval.low.compare(interval.high) <= 0
 }
 
 ///|
 /// Checks if two intervals overlap.
-pub fn intervals_overlap[V : Compare](
+pub fn[V : Compare] intervals_overlap(
   a : Interval[V],
   b : Interval[V],
-  interval_type~ : IntervalType = IntervalType::Closed
+  interval_type~ : IntervalType = IntervalType::Closed,
 ) -> Bool {
   match interval_type {
     IntervalType::Closed =>
@@ -613,10 +616,10 @@ pub fn intervals_overlap[V : Compare](
 
 ///|
 /// Checks if interval a contains interval b.
-pub fn interval_contains[V : Compare](
+pub fn[V : Compare] interval_contains(
   a : Interval[V],
   b : Interval[V],
-  interval_type~ : IntervalType = IntervalType::Closed
+  interval_type~ : IntervalType = IntervalType::Closed,
 ) -> Bool {
   match interval_type {
     IntervalType::Closed =>
@@ -631,10 +634,10 @@ pub fn interval_contains[V : Compare](
 
 ///|
 /// Checks if two endpoints overlap based on interval type.
-pub fn endpoints_overlap[V : Compare](
+pub fn[V : Compare] endpoints_overlap(
   a : V,
   b : V,
-  interval_type : IntervalType
+  interval_type : IntervalType,
 ) -> Bool {
   match interval_type {
     IntervalType::Closed => a.compare(b) >= 0
@@ -646,10 +649,10 @@ pub fn endpoints_overlap[V : Compare](
 
 ///|
 /// Checks if endpoint a is less than or equal to endpoint b based on interval type.
-pub fn endpoints_leq[V : Compare](
+pub fn[V : Compare] endpoints_leq(
   a : V,
   b : V,
-  interval_type : IntervalType
+  interval_type : IntervalType,
 ) -> Bool {
   match interval_type {
     IntervalType::Closed => a.compare(b) <= 0
@@ -661,10 +664,10 @@ pub fn endpoints_leq[V : Compare](
 
 ///|
 /// Checks if endpoint a is greater than or equal to endpoint b based on interval type.
-pub fn endpoints_geq[V : Compare](
+pub fn[V : Compare] endpoints_geq(
   a : V,
   b : V,
-  interval_type : IntervalType
+  interval_type : IntervalType,
 ) -> Bool {
   match interval_type {
     IntervalType::Closed => a.compare(b) >= 0
@@ -676,7 +679,7 @@ pub fn endpoints_geq[V : Compare](
 
 ///|
 /// Converts the tree to an array of IntervalMatch objects.
-pub fn to_array[V, D](self : T[V, D]) -> Array[IntervalMatch[V, D]] {
+pub fn[V, D] to_array(self : T[V, D]) -> Array[IntervalMatch[V, D]] {
   // Get all intervals and store them in a temporary array
   let intervals_data = []
   self.each(fn(interval, data) { intervals_data.push((interval, data)) })
@@ -718,7 +721,7 @@ pub fn to_array[V, D](self : T[V, D]) -> Array[IntervalMatch[V, D]] {
 
 ///|
 /// Creates an interval with the given endpoints.
-pub fn make_interval[T : Compare](low : T, high : T) -> Interval[T] {
+pub fn[T : Compare] make_interval(low : T, high : T) -> Interval[T] {
   if low.compare(high) > 0 {
     println("Warning: Created invalid interval")
   }
@@ -726,16 +729,16 @@ pub fn make_interval[T : Compare](low : T, high : T) -> Interval[T] {
 }
 
 ///|
-pub impl[V : Show, D] Show for T[V, D] with output(self, logger) {
+pub impl[V, D] Show for T[V, D] with output(self, logger) {
   logger.write_string("IntervalTree(size=" + self.size.to_string() + ")")
 }
 
 ///|
 /// Helper function for traversing the tree in-order
-pub fn in_order_traverse[V, D, R](
+pub fn[V, D, R] in_order_traverse(
   node : Node[V, D]?,
   f : (Node[V, D]) -> R,
-  acc : R
+  acc : R,
 ) -> R {
   match node {
     None => acc
@@ -754,14 +757,14 @@ pub fn in_order_traverse[V, D, R](
 
 ///|
 /// Iterates over all intervals in the tree.
-pub fn each[V, D](self : T[V, D], f : (Interval[V], D) -> Unit) -> Unit {
+pub fn[V, D] each(self : T[V, D], f : (Interval[V], D) -> Unit) -> Unit {
   let node_f = fn(node : Node[V, D]) -> Unit { f(node.interval, node.data) }
   in_order_traverse(self.root, node_f, ())
 }
 
 ///|
 /// Iterates over all intervals in the tree with index.
-pub fn eachi[V, D](self : T[V, D], f : (Int, Interval[V], D) -> Unit) -> Unit {
+pub fn[V, D] eachi(self : T[V, D], f : (Int, Interval[V], D) -> Unit) -> Unit {
   let mut index = 0
   let node_f = fn(node : Node[V, D]) -> Unit {
     f(index, node.interval, node.data)
@@ -773,12 +776,10 @@ pub fn eachi[V, D](self : T[V, D], f : (Int, Interval[V], D) -> Unit) -> Unit {
 // Access intervals in the tree by index
 
 ///| This is a convenience method that provides index-based access to tree elements
+
 ///|
 /// Implement index access for interval tree
-pub fn op_get[V : Compare, D](
-  self : T[V, D],
-  index : Int
-) -> IntervalMatch[V, D] {
+pub fn[V, D] op_get(self : T[V, D], index : Int) -> IntervalMatch[V, D] {
   let mut result = None
   let mut current_idx = 0
   self.each(fn(interval, data) {
@@ -788,5 +789,4 @@ pub fn op_get[V : Compare, D](
     current_idx += 1
   })
   result.unwrap()
-  
 }
