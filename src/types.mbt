@@ -73,3 +73,12 @@ pub fn default_options() -> IntervalOptions {
     allow_duplicates: false,
   }
 }
+
+///|
+/// Create interval options.
+pub fn IntervalOptions::new(
+  interval_type~ : IntervalType = IntervalType::Closed,
+  allow_duplicates~ : Bool = false,
+) -> IntervalOptions {
+  IntervalOptions::{ interval_type, allow_duplicates }
+}
