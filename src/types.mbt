@@ -73,3 +73,36 @@ pub fn default_options() -> IntervalOptions {
     allow_duplicates: false,
   }
 }
+
+///|
+/// Creates options for closed intervals.
+pub fn closed_options(allow_duplicates~ : Bool = false) -> IntervalOptions {
+  IntervalOptions::{
+    interval_type: IntervalType::Closed,
+    allow_duplicates,
+  }
+}
+
+///|
+/// Creates options for open intervals.
+pub fn open_options(allow_duplicates~ : Bool = false) -> IntervalOptions {
+  IntervalOptions::{ interval_type: IntervalType::Open, allow_duplicates }
+}
+
+///|
+/// Creates options for left-closed intervals.
+pub fn left_closed_options(allow_duplicates~ : Bool = false) -> IntervalOptions {
+  IntervalOptions::{
+    interval_type: IntervalType::LeftClosed,
+    allow_duplicates,
+  }
+}
+
+///|
+/// Creates options for right-closed intervals.
+pub fn right_closed_options(allow_duplicates~ : Bool = false) -> IntervalOptions {
+  IntervalOptions::{
+    interval_type: IntervalType::RightClosed,
+    allow_duplicates,
+  }
+}

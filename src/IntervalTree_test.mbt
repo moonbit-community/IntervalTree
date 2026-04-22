@@ -417,10 +417,7 @@ test "different_value_types" {
 ///|
 test "test_different_interval_types" {
   // Test open intervals
-  let open_option = IntervalOptions::{
-    interval_type: IntervalType::Open,
-    allow_duplicates: false,
-  }
+  let open_option = @IntervalTree.open_options()
   let open_tree : T[Int, String] = @IntervalTree.new_with_options(open_option)
   ignore(open_tree.insert(@IntervalTree.make_interval(10, 20), "A"))
   let open_query = @IntervalTree.make_interval(20, 30)
@@ -428,10 +425,7 @@ test "test_different_interval_types" {
   assert_eq(open_results.length(), 0) // In open interval type, (10,20) doesn't overlap with (20,30)
 
   // Test closed intervals
-  let closed_option = IntervalOptions::{
-    interval_type: IntervalType::Closed,
-    allow_duplicates: false,
-  }
+  let closed_option = @IntervalTree.closed_options()
   let closed_tree : T[Int, String] = @IntervalTree.new_with_options(
     closed_option,
   )
