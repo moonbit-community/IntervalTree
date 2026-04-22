@@ -1,0 +1,127 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "kesmeey/IntervalTree"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn[V : Compare, D] balance(Node[V, D]) -> Unit
+
+pub fn closed_options(allow_duplicates? : Bool) -> IntervalOptions
+
+pub fn default_options() -> IntervalOptions
+
+pub fn[V : Compare] endpoints_geq(V, V, IntervalType) -> Bool
+
+pub fn[V : Compare] endpoints_leq(V, V, IntervalType) -> Bool
+
+pub fn[V : Compare] endpoints_overlap(V, V, IntervalType) -> Bool
+
+pub fn[V : Compare, D] find_contained_helper(Node[V, D], Interval[V], Array[IntervalMatch[V, D]], IntervalType) -> Unit
+
+pub fn[V : Compare, D] find_exact_helper(Node[V, D], Interval[V]) -> Node[V, D]?
+
+pub fn[V, D] find_min(Node[V, D]) -> Node[V, D]
+
+pub fn[V : Compare, D] find_overlaps_helper(Node[V, D], Interval[V], Array[IntervalMatch[V, D]], IntervalType) -> Unit
+
+pub fn[V : Compare, D] from_array(Array[(Interval[V], D)], options? : IntervalOptions) -> T[V, D]
+
+pub fn[V, D] get_balance_factor(Node[V, D]) -> Int
+
+pub fn[V, D, R] in_order_traverse(Node[V, D]?, (Node[V, D]) -> R, R) -> R
+
+pub fn[V : Compare, D] insert_node(Node[V, D], Node[V, D]) -> Bool
+
+pub fn[V : Compare] interval_contains(Interval[V], Interval[V], interval_type? : IntervalType) -> Bool
+
+pub fn[V : Compare] intervals_overlap(Interval[V], Interval[V], interval_type? : IntervalType) -> Bool
+
+pub fn[V : Compare] is_valid_interval(Interval[V]) -> Bool
+
+pub fn left_closed_options(allow_duplicates? : Bool) -> IntervalOptions
+
+pub fn[V : Compare, D] left_rotate(Node[V, D]) -> Unit
+
+pub fn[T : Compare] make_interval(T, T) -> Interval[T]
+
+pub fn[V, D] new() -> T[V, D]
+
+pub fn[V, D] new_with_options(IntervalOptions) -> T[V, D]
+
+pub fn open_options(allow_duplicates? : Bool) -> IntervalOptions
+
+pub fn[V : Compare, D] remove_node(Node[V, D]?, Interval[V]) -> RemoveResult[V, D]
+
+pub fn right_closed_options(allow_duplicates? : Bool) -> IntervalOptions
+
+pub fn[V : Compare, D] right_rotate(Node[V, D]) -> Unit
+
+pub fn[V : Compare, D] singleton(Interval[V], D, options? : IntervalOptions) -> T[V, D]
+
+pub fn[V : Compare, D] update_height_and_max_high(Node[V, D]) -> Unit
+
+// Errors
+
+// Types and methods
+pub struct Interval[T] {
+  low : T
+  high : T
+} derive(Eq, @debug.Debug)
+
+pub struct IntervalMatch[T, D] {
+  interval : Interval[T]
+  data : D
+} derive(Eq, @debug.Debug)
+
+pub struct IntervalOptions {
+  interval_type : IntervalType
+  allow_duplicates : Bool
+} derive(Eq, @debug.Debug)
+
+pub(all) enum IntervalType {
+  Closed
+  Open
+  LeftClosed
+  RightClosed
+} derive(Eq, @debug.Debug)
+
+pub struct Node[V, D] {
+  mut interval : Interval[V]
+  mut data : D
+  mut max_high : V
+  mut left : Node[V, D]?
+  mut right : Node[V, D]?
+  mut height : Int
+} derive(Eq, @debug.Debug)
+
+pub struct RemoveResult[V, D] {
+  node : Node[V, D]?
+  removed : Bool
+}
+
+pub struct T[V, D] {
+  mut root : Node[V, D]?
+  mut size : Int
+  options : IntervalOptions
+}
+pub fn[V, D] T::clear(Self[V, D]) -> Unit
+pub fn[V : Compare, D] T::contains(Self[V, D], Interval[V]) -> Bool
+pub fn[V, D] T::each(Self[V, D], (Interval[V], D) -> Unit) -> Unit
+pub fn[V, D] T::eachi(Self[V, D], (Int, Interval[V], D) -> Unit) -> Unit
+pub fn[V : Compare, D] T::find_contained(Self[V, D], Interval[V]) -> Array[IntervalMatch[V, D]]
+pub fn[V : Compare, D] T::find_exact(Self[V, D], Interval[V]) -> Node[V, D]?
+pub fn[V : Compare, D] T::find_overlaps(Self[V, D], Interval[V]) -> Array[IntervalMatch[V, D]]
+pub fn[V : Compare, D] T::insert(Self[V, D], Interval[V], D) -> Bool
+pub fn[V, D] T::is_empty(Self[V, D]) -> Bool
+pub fn[V, D] T::op_get(Self[V, D], Int) -> IntervalMatch[V, D]
+pub fn[V : Compare, D] T::remove(Self[V, D], Interval[V]) -> Bool
+pub fn[V, D] T::size(Self[V, D]) -> Int
+pub fn[V, D] T::to_array(Self[V, D]) -> Array[IntervalMatch[V, D]]
+pub impl[V, D] Show for T[V, D]
+
+// Type aliases
+
+// Traits
+
