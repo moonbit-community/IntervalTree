@@ -1,12 +1,12 @@
 ///|
-test "new_empty_tree" {
+test "new_empty_tree_again" {
   let tree : T[Int, String] = @IntervalTree.new()
   assert_eq(tree.size(), 0)
   assert_eq(tree.is_empty(), true)
 }
 
 ///|
-test "insert_and_find" {
+test "insert_and_find_again" {
   let tree : T[Int, String] = @IntervalTree.new()
   let p1 = tree.insert(@IntervalTree.make_interval(10, 20), "A")
   assert_eq(p1, true)
@@ -20,7 +20,7 @@ test "insert_and_find" {
 }
 
 ///|
-test "find_overlaps" {
+test "find_overlaps_again" {
   let tree : T[Int, String] = @IntervalTree.new()
   ignore(tree.insert(@IntervalTree.make_interval(10, 20), "A"))
   ignore(tree.insert(@IntervalTree.make_interval(15, 25), "B"))
@@ -35,7 +35,7 @@ test "find_overlaps" {
 }
 
 ///|
-test "find_contained" {
+test "find_contained_again" {
   let tree : T[Int, String] = @IntervalTree.new()
   ignore(tree.insert(@IntervalTree.make_interval(10, 20), "A"))
   ignore(tree.insert(@IntervalTree.make_interval(12, 18), "B"))
@@ -49,7 +49,7 @@ test "find_contained" {
 }
 
 ///|
-test "remove_intervals" {
+test "remove_intervals_again" {
   let tree : T[Int, String] = @IntervalTree.new()
 
   // Add intervals - modified to use ignore
@@ -71,7 +71,7 @@ test "remove_intervals" {
 }
 
 ///|
-test "clear_tree" {
+test "clear_tree_again" {
   let tree : T[Int, String] = @IntervalTree.new()
 
   // Add intervals - modified to use ignore
@@ -87,7 +87,7 @@ test "clear_tree" {
 }
 
 ///|
-test "each_method" {
+test "each_method_again" {
   let tree : T[Int, String] = @IntervalTree.new()
   ignore(tree.insert(@IntervalTree.make_interval(10, 20), "A"))
   ignore(tree.insert(@IntervalTree.make_interval(15, 25), "B"))
@@ -106,7 +106,7 @@ test "each_method" {
 }
 
 ///|
-test "eachi_method" {
+test "eachi_method_again" {
   let tree : T[Int, String] = @IntervalTree.new()
   ignore(tree.insert(@IntervalTree.make_interval(10, 20), "A"))
   ignore(tree.insert(@IntervalTree.make_interval(15, 25), "B"))
@@ -124,7 +124,7 @@ test "eachi_method" {
 }
 
 ///|
-test "to_array_method" {
+test "to_array_method_again" {
   let tree : T[Int, String] = @IntervalTree.new()
   ignore(tree.insert(@IntervalTree.make_interval(10, 20), "A"))
   ignore(tree.insert(@IntervalTree.make_interval(15, 25), "B"))
@@ -135,7 +135,7 @@ test "to_array_method" {
 }
 
 ///|
-test "singleton_constructor" {
+test "singleton_constructor_again" {
   let interval = @IntervalTree.make_interval(10, 20)
   let tree = @IntervalTree.singleton(interval, "data")
   assert_eq(tree.size(), 1)
@@ -143,7 +143,7 @@ test "singleton_constructor" {
 }
 
 ///|
-test "from_array_constructor" {
+test "from_array_constructor_again" {
   let intervals = [
     (@IntervalTree.make_interval(10, 20), "A"),
     (@IntervalTree.make_interval(15, 25), "B"),
@@ -157,7 +157,7 @@ test "from_array_constructor" {
 }
 
 ///|
-test "op_get_method" {
+test "op_get_method_again" {
   let tree : T[Int, String] = @IntervalTree.new()
   ignore(tree.insert(@IntervalTree.make_interval(10, 20), "A"))
   ignore(tree.insert(@IntervalTree.make_interval(15, 25), "B"))
@@ -188,7 +188,7 @@ test "op_get_method" {
 }
 
 ///|
-test "different_value_types" {
+test "different_value_types_again" {
   // Test with Float values
   let float_tree : T[Float, String] = @IntervalTree.new()
   ignore(float_tree.insert(@IntervalTree.make_interval(10.5, 20.5), "A"))
