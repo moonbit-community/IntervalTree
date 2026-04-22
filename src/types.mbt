@@ -21,7 +21,7 @@
 pub struct Interval[T] {
   low : T // 区间低端点
   high : T // 区间高端点
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// The main interval tree container
@@ -40,7 +40,7 @@ pub struct Node[V, D] {
   mut left : Node[V, D]? // 左子树
   mut right : Node[V, D]? // 右子树
   mut height : Int // 节点高度，用于平衡
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// Represents the type of interval: closed [a,b], open (a,b), or half-open [a,b) or (a,b]
@@ -49,21 +49,21 @@ pub(all) enum IntervalType {
   Open // (a,b) - 不包含任何端点
   LeftClosed // [a,b) - 包含左端点，不包含右端点
   RightClosed // (a,b] - 不包含左端点，包含右端点
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// Result of an interval query, containing the interval and associated data
 pub struct IntervalMatch[T, D] {
   interval : Interval[T] // 匹配的区间
   data : D // 关联的数据
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// Options for interval operations
 pub struct IntervalOptions {
   interval_type : IntervalType // 区间类型，默认为闭区间
   allow_duplicates : Bool // 是否允许重复区间，默认为false
-} derive(Eq, Show)
+} derive(Eq, Debug)
 
 ///|
 /// Default interval options: closed intervals with no duplicates allowed
