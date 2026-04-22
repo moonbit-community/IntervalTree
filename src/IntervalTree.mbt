@@ -14,7 +14,7 @@ pub fn[V, D] new_with_options(options : IntervalOptions) -> T[V, D] {
 pub fn[V : Compare, D] singleton(
   interval : Interval[V],
   data : D,
-  options~ : IntervalOptions = default_options(),
+  options? : IntervalOptions = default_options(),
 ) -> T[V, D] {
   let tree = new_with_options(options)
   ignore(tree.insert(interval, data))
@@ -25,7 +25,7 @@ pub fn[V : Compare, D] singleton(
 /// Creates a new interval tree from an array of intervals and data.
 pub fn[V : Compare, D] from_array(
   intervals : Array[(Interval[V], D)],
-  options~ : IntervalOptions = default_options(),
+  options? : IntervalOptions = default_options(),
 ) -> T[V, D] {
   let tree = new_with_options(options)
   for i in 0..<intervals.length() {
@@ -191,10 +191,7 @@ pub fn[V : Compare, D] T::find_exact(
 
 ///|
 /// Returns true if the tree contains an interval that exactly matches the query.
-pub fn[V : Compare, D] T::contains(
-  self : T[V, D],
-  query : Interval[V],
-) -> Bool {
+pub fn[V : Compare, D] T::contains(self : T[V, D], query : Interval[V]) -> Bool {
   match self.find_exact(query) {
     Some(_) => true
     None => false
@@ -607,7 +604,7 @@ pub fn[V : Compare] is_valid_interval(interval : Interval[V]) -> Bool {
 pub fn[V : Compare] intervals_overlap(
   a : Interval[V],
   b : Interval[V],
-  interval_type~ : IntervalType = IntervalType::Closed,
+  interval_type? : IntervalType = IntervalType::Closed,
 ) -> Bool {
   match interval_type {
     IntervalType::Closed =>
@@ -625,7 +622,7 @@ pub fn[V : Compare] intervals_overlap(
 pub fn[V : Compare] interval_contains(
   a : Interval[V],
   b : Interval[V],
-  interval_type~ : IntervalType = IntervalType::Closed,
+  interval_type? : IntervalType = IntervalType::Closed,
 ) -> Bool {
   match interval_type {
     IntervalType::Closed =>
@@ -763,10 +760,7 @@ pub fn[V, D, R] in_order_traverse(
 
 ///|
 /// Iterates over all intervals in the tree.
-pub fn[V, D] T::each(
-  self : T[V, D],
-  f : (Interval[V], D) -> Unit,
-) -> Unit {
+pub fn[V, D] T::each(self : T[V, D], f : (Interval[V], D) -> Unit) -> Unit {
   let node_f = fn(node : Node[V, D]) -> Unit { f(node.interval, node.data) }
   in_order_traverse(self.root, node_f, ())
 }
