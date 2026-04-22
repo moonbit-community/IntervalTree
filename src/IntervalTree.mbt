@@ -38,7 +38,7 @@ pub fn[V : Compare, D] from_array(
 ///|
 /// Inserts an interval with associated data into the tree.
 /// Returns true if the interval was inserted, false if it was rejected or updated.
-pub fn[V : Compare, D] insert(
+pub fn[V : Compare, D] T::insert(
   self : T[V, D],
   interval : Interval[V],
   data : D,
@@ -90,7 +90,10 @@ pub fn[V : Compare, D] insert(
 ///|
 /// Removes an interval from the tree.
 /// Returns true if the interval was found and removed.
-pub fn[V : Compare, D] remove(self : T[V, D], interval : Interval[V]) -> Bool {
+pub fn[V : Compare, D] T::remove(
+  self : T[V, D],
+  interval : Interval[V],
+) -> Bool {
   match self.root {
     None => return false
     Some(_) => {
@@ -109,7 +112,7 @@ pub fn[V : Compare, D] remove(self : T[V, D], interval : Interval[V]) -> Bool {
 
 ///|
 /// Finds all intervals that overlap with the query interval.
-pub fn[V : Compare, D] find_overlaps(
+pub fn[V : Compare, D] T::find_overlaps(
   self : T[V, D],
   query : Interval[V],
 ) -> Array[IntervalMatch[V, D]] {
@@ -160,7 +163,7 @@ pub fn[V : Compare, D] find_overlaps_helper(
 
 ///|
 /// Finds all intervals that are completely contained within the query interval.
-pub fn[V : Compare, D] find_contained(
+pub fn[V : Compare, D] T::find_contained(
   self : T[V, D],
   query : Interval[V],
 ) -> Array[IntervalMatch[V, D]] {
@@ -176,7 +179,7 @@ pub fn[V : Compare, D] find_contained(
 
 ///|
 /// Finds an interval exactly matching the query.
-pub fn[V : Compare, D] find_exact(
+pub fn[V : Compare, D] T::find_exact(
   self : T[V, D],
   query : Interval[V],
 ) -> Node[V, D]? {
@@ -188,7 +191,10 @@ pub fn[V : Compare, D] find_exact(
 
 ///|
 /// Returns true if the tree contains an interval that exactly matches the query.
-pub fn[V : Compare, D] contains(self : T[V, D], query : Interval[V]) -> Bool {
+pub fn[V : Compare, D] T::contains(
+  self : T[V, D],
+  query : Interval[V],
+) -> Bool {
   match self.find_exact(query) {
     Some(_) => true
     None => false
@@ -197,20 +203,20 @@ pub fn[V : Compare, D] contains(self : T[V, D], query : Interval[V]) -> Bool {
 
 ///|
 /// Clears all intervals from the tree.
-pub fn[V, D] clear(self : T[V, D]) -> Unit {
+pub fn[V, D] T::clear(self : T[V, D]) -> Unit {
   self.root = None
   self.size = 0
 }
 
 ///|
 /// Returns the number of intervals in the tree.
-pub fn[V, D] size(self : T[V, D]) -> Int {
+pub fn[V, D] T::size(self : T[V, D]) -> Int {
   self.size
 }
 
 ///|
 /// Returns true if the tree is empty.
-pub fn[V, D] is_empty(self : T[V, D]) -> Bool {
+pub fn[V, D] T::is_empty(self : T[V, D]) -> Bool {
   self.size == 0
 }
 
@@ -679,7 +685,7 @@ pub fn[V : Compare] endpoints_geq(
 
 ///|
 /// Converts the tree to an array of IntervalMatch objects.
-pub fn[V, D] to_array(self : T[V, D]) -> Array[IntervalMatch[V, D]] {
+pub fn[V, D] T::to_array(self : T[V, D]) -> Array[IntervalMatch[V, D]] {
   // Get all intervals and store them in a temporary array
   let intervals_data = []
   self.each(fn(interval, data) { intervals_data.push((interval, data)) })
@@ -757,14 +763,20 @@ pub fn[V, D, R] in_order_traverse(
 
 ///|
 /// Iterates over all intervals in the tree.
-pub fn[V, D] each(self : T[V, D], f : (Interval[V], D) -> Unit) -> Unit {
+pub fn[V, D] T::each(
+  self : T[V, D],
+  f : (Interval[V], D) -> Unit,
+) -> Unit {
   let node_f = fn(node : Node[V, D]) -> Unit { f(node.interval, node.data) }
   in_order_traverse(self.root, node_f, ())
 }
 
 ///|
 /// Iterates over all intervals in the tree with index.
-pub fn[V, D] eachi(self : T[V, D], f : (Int, Interval[V], D) -> Unit) -> Unit {
+pub fn[V, D] T::eachi(
+  self : T[V, D],
+  f : (Int, Interval[V], D) -> Unit,
+) -> Unit {
   let mut index = 0
   let node_f = fn(node : Node[V, D]) -> Unit {
     f(index, node.interval, node.data)
@@ -779,7 +791,7 @@ pub fn[V, D] eachi(self : T[V, D], f : (Int, Interval[V], D) -> Unit) -> Unit {
 
 ///|
 /// Implement index access for interval tree
-pub fn[V, D] op_get(self : T[V, D], index : Int) -> IntervalMatch[V, D] {
+pub fn[V, D] T::op_get(self : T[V, D], index : Int) -> IntervalMatch[V, D] {
   let mut result = None
   let mut current_idx = 0
   self.each(fn(interval, data) {
