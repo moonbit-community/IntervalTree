@@ -732,9 +732,12 @@ pub fn[T : Compare] make_interval(low : T, high : T) -> Interval[T] {
 }
 
 ///|
-pub impl[V, D] Show for T[V, D] with output(self, logger) {
+pub impl[V, D] Show for T[V, D] with fn output(self, logger) {
   logger.write_string("IntervalTree(size=" + self.size.to_string() + ")")
 }
+
+///|
+pub extend T with Show::{to_string, output}
 
 ///|
 /// Helper function for traversing the tree in-order
@@ -785,7 +788,8 @@ pub fn[V, D] T::eachi(
 
 ///|
 /// Implement index access for interval tree
-pub fn[V, D] T::op_get(self : T[V, D], index : Int) -> IntervalMatch[V, D] {
+#alias("_[_]")
+pub fn[V, D] T::get(self : T[V, D], index : Int) -> IntervalMatch[V, D] {
   let mut result = None
   let mut current_idx = 0
   self.each(fn(interval, data) {
