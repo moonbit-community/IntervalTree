@@ -69,16 +69,25 @@ pub struct Interval[T] {
   low : T
   high : T
 } derive(Eq, @debug.Debug)
+pub fn[T : Eq] Interval::equal(Self[T], Self[T]) -> Bool
+pub fn[T : Eq] Interval::not_equal(Self[T], Self[T]) -> Bool
+pub fn[T : @debug.Debug] Interval::to_repr(Self[T]) -> @debug.Repr
 
 pub struct IntervalMatch[T, D] {
   interval : Interval[T]
   data : D
 } derive(Eq, @debug.Debug)
+pub fn[T : Eq, D : Eq] IntervalMatch::equal(Self[T, D], Self[T, D]) -> Bool
+pub fn[T : Eq, D : Eq] IntervalMatch::not_equal(Self[T, D], Self[T, D]) -> Bool
+pub fn[T : @debug.Debug, D : @debug.Debug] IntervalMatch::to_repr(Self[T, D]) -> @debug.Repr
 
 pub struct IntervalOptions {
   interval_type : IntervalType
   allow_duplicates : Bool
 } derive(Eq, @debug.Debug)
+pub fn IntervalOptions::equal(Self, Self) -> Bool
+pub fn IntervalOptions::not_equal(Self, Self) -> Bool
+pub fn IntervalOptions::to_repr(Self) -> @debug.Repr
 
 pub(all) enum IntervalType {
   Closed
@@ -86,6 +95,9 @@ pub(all) enum IntervalType {
   LeftClosed
   RightClosed
 } derive(Eq, @debug.Debug)
+pub fn IntervalType::equal(Self, Self) -> Bool
+pub fn IntervalType::not_equal(Self, Self) -> Bool
+pub fn IntervalType::to_repr(Self) -> @debug.Repr
 
 pub struct Node[V, D] {
   mut interval : Interval[V]
@@ -95,6 +107,9 @@ pub struct Node[V, D] {
   mut right : Node[V, D]?
   mut height : Int
 } derive(Eq, @debug.Debug)
+pub fn[V : Eq, D : Eq] Node::equal(Self[V, D], Self[V, D]) -> Bool
+pub fn[V : Eq, D : Eq] Node::not_equal(Self[V, D], Self[V, D]) -> Bool
+pub fn[V : @debug.Debug, D : @debug.Debug] Node::to_repr(Self[V, D]) -> @debug.Repr
 
 pub struct RemoveResult[V, D] {
   node : Node[V, D]?
@@ -113,15 +128,17 @@ pub fn[V, D] T::eachi(Self[V, D], (Int, Interval[V], D) -> Unit) -> Unit
 pub fn[V : Compare, D] T::find_contained(Self[V, D], Interval[V]) -> Array[IntervalMatch[V, D]]
 pub fn[V : Compare, D] T::find_exact(Self[V, D], Interval[V]) -> Node[V, D]?
 pub fn[V : Compare, D] T::find_overlaps(Self[V, D], Interval[V]) -> Array[IntervalMatch[V, D]]
+#alias("_[_]")
+pub fn[V, D] T::get(Self[V, D], Int) -> IntervalMatch[V, D]
 pub fn[V : Compare, D] T::insert(Self[V, D], Interval[V], D) -> Bool
 pub fn[V, D] T::is_empty(Self[V, D]) -> Bool
-pub fn[V, D] T::op_get(Self[V, D], Int) -> IntervalMatch[V, D]
+pub fn[V, D] T::output(Self[V, D], &Logger) -> Unit
 pub fn[V : Compare, D] T::remove(Self[V, D], Interval[V]) -> Bool
 pub fn[V, D] T::size(Self[V, D]) -> Int
 pub fn[V, D] T::to_array(Self[V, D]) -> Array[IntervalMatch[V, D]]
+pub fn[V, D] T::to_string(Self[V, D]) -> String
 pub impl[V, D] Show for T[V, D]
 
 // Type aliases
 
 // Traits
-

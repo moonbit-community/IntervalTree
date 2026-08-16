@@ -24,6 +24,12 @@ pub struct Interval[T] {
 } derive(Eq, Debug)
 
 ///|
+pub extend Interval with Eq::{not_equal, equal}
+
+///|
+pub extend Interval with @moonbitlang/core/debug.Debug::{to_repr}
+
+///|
 /// The main interval tree container
 pub struct T[V, D] {
   mut root : Node[V, D]? // 根节点
@@ -43,6 +49,12 @@ pub struct Node[V, D] {
 } derive(Eq, Debug)
 
 ///|
+pub extend Node with Eq::{not_equal, equal}
+
+///|
+pub extend Node with @moonbitlang/core/debug.Debug::{to_repr}
+
+///|
 /// Represents the type of interval: closed [a,b], open (a,b), or half-open [a,b) or (a,b]
 pub(all) enum IntervalType {
   Closed // [a,b] - 包含两个端点
@@ -52,6 +64,12 @@ pub(all) enum IntervalType {
 } derive(Eq, Debug)
 
 ///|
+pub extend IntervalType with Eq::{not_equal, equal}
+
+///|
+pub extend IntervalType with @moonbitlang/core/debug.Debug::{to_repr}
+
+///|
 /// Result of an interval query, containing the interval and associated data
 pub struct IntervalMatch[T, D] {
   interval : Interval[T] // 匹配的区间
@@ -59,11 +77,23 @@ pub struct IntervalMatch[T, D] {
 } derive(Eq, Debug)
 
 ///|
+pub extend IntervalMatch with Eq::{not_equal, equal}
+
+///|
+pub extend IntervalMatch with @moonbitlang/core/debug.Debug::{to_repr}
+
+///|
 /// Options for interval operations
 pub struct IntervalOptions {
   interval_type : IntervalType // 区间类型，默认为闭区间
   allow_duplicates : Bool // 是否允许重复区间，默认为false
 } derive(Eq, Debug)
+
+///|
+pub extend IntervalOptions with Eq::{not_equal, equal}
+
+///|
+pub extend IntervalOptions with @moonbitlang/core/debug.Debug::{to_repr}
 
 ///|
 /// Default interval options: closed intervals with no duplicates allowed
